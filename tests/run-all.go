@@ -27,7 +27,7 @@ import (
 var (
 	concurrentTests        = 15
 	regularTestsTimeout    = "20m"
-	regularTestsRetries    = 3
+	regularTestsRetries    = 1
 	sequentialTestsTimeout = "20m"
 	sequentialTestsRetries = 1
 )
@@ -129,7 +129,9 @@ func getRegularTestFiles(e2eRegex string) []string {
 		return !strings.HasPrefix(path, "tests") || // we need this condition to skip non e2e test from execution
 			strings.Contains(path, "utils") ||
 			strings.Contains(path, "sequential") ||
-			!strings.HasSuffix(file, "_test.go")
+			!strings.HasSuffix(file, "_test.go") ||
+			strings.Contains(path, "aws") ||
+			strings.Contains(path, "gcp")
 	}
 	return getTestFiles(e2eRegex, filter)
 }

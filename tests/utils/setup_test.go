@@ -217,7 +217,7 @@ func TestDeployKEDA(t *testing.T) {
 	_, err := KubeClient.CoreV1().Secrets(KEDANamespace).Create(context.Background(), secret, v1.CreateOptions{})
 	require.NoErrorf(t, err, "error deploying custom CA - %s", err)
 
-	out, err := ExecuteCommandWithDir("make deploy", "../..")
+	out, err := ExecuteCommandWithDir("make deploy IMAGE_REGISTRY=mcr.microsoft.com IMAGE_REPO=azurekeda ", "../..")
 	require.NoErrorf(t, err, "error deploying KEDA - %s", err)
 
 	t.Log(string(out))

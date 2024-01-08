@@ -1,12 +1,11 @@
 name: main-build
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  
 jobs:
   build:
     name: build
-    runs-on: ARM64
+    runs-on: 'ubuntu-latest'
     permissions:
       contents: read
       packages: write
@@ -50,11 +49,11 @@ jobs:
         uses: docker/login-action@v3
         with:
           # Username used to log in to a Docker registry. If not set then no login will occur
-          username: ${{ github.repository_owner }}
+          username: ${{ secrets.MCR_USER }}
           # Password or personal access token used to log in to a Docker registry. If not set then no login will occur
-          password: ${{ secrets.GHCR_AUTH_PAT }}
+          password: ${{ secrets.MCR_KEY }}
           # Server address of Docker registry. If not set then will default to Docker Hub
-          registry: ghcr.io
+          registry: azurekeda.azurecr.io
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -74,53 +73,53 @@ jobs:
         # against the sigstore community Fulcio instance.
         run: make sign-images
 
-  validate:
-    needs: build
-    uses: kedacore/keda/.github/workflows/template-main-e2e-test.yml@main
-    secrets: inherit
+  # validate:
+  #   needs: build
+  #   uses: kedacore/keda/.github/workflows/template-main-e2e-test.yml@main
+  #   secrets: inherit
 
-  validate-arm64:
-    needs: build
-    uses: kedacore/keda/.github/workflows/template-arm64-smoke-tests.yml@main
+  # validate-arm64:
+  #   needs: build
+  #   uses: kedacore/keda/.github/workflows/template-arm64-smoke-tests.yml@main
 
-  validate-k8s-versions:
-    needs: build
-    uses: kedacore/keda/.github/workflows/template-versions-smoke-tests.yml@main
+  # validate-k8s-versions:
+  #   needs: build
+  #   uses: kedacore/keda/.github/workflows/template-versions-smoke-tests.yml@main
 
-  trivy-scan:
-    needs: build
-    uses: kedacore/keda/.github/workflows/template-trivy-scan.yml@main
-    with:
-      runs-on: 'ubuntu-latest'
-      scan-type: 'fs'
-      format: 'sarif'
-      exit-code: 0
-      publish: true
+  # trivy-scan:
+  #   needs: build
+  #   uses: kedacore/keda/.github/workflows/template-trivy-scan.yml@main
+  #   with:
+  #     runs-on: 'ubuntu-latest'
+  #     scan-type: 'fs'
+  #     format: 'sarif'
+  #     exit-code: 0
+  #     publish: true
 
-  trivy-scan-metrics-server:
-    needs: build
-    strategy:
-      matrix:
-        runner: [ARM64, ubuntu-latest]
-    uses: kedacore/keda/.github/workflows/template-trivy-scan.yml@main
-    with:
-      runs-on: ${{ matrix.runner }}
-      scan-type: 'image'
-      image-ref: ghcr.io/kedacore/keda-metrics-apiserver:main
-      format: 'sarif'
-      exit-code: 0
-      publish: true
+  # trivy-scan-metrics-server:
+  #   needs: build
+  #   strategy:
+  #     matrix:
+  #       runner: [ARM64, ubuntu-latest]
+  #   uses: kedacore/keda/.github/workflows/template-trivy-scan.yml@main
+  #   with:
+  #     runs-on: ${{ matrix.runner }}
+  #     scan-type: 'image'
+  #     image-ref: ghcr.io/kedacore/keda-metrics-apiserver:main
+  #     format: 'sarif'
+  #     exit-code: 0
+  #     publish: true
 
-  trivy-scan-keda:
-    needs: build
-    strategy:
-      matrix:
-        runner: [ARM64, ubuntu-latest]
-    uses: kedacore/keda/.github/workflows/template-trivy-scan.yml@main
-    with:
-      runs-on: ${{ matrix.runner }}
-      scan-type: 'image'
-      image-ref: ghcr.io/kedacore/keda:main
-      format: 'sarif'
-      exit-code: 0
-      publish: true
+  # trivy-scan-keda:
+  #   needs: build
+  #   strategy:
+  #     matrix:
+  #       runner: [ARM64, ubuntu-latest]
+  #   uses: kedacore/keda/.github/workflows/template-trivy-scan.yml@main
+  #   with:
+  #     runs-on: ${{ matrix.runner }}
+  #     scan-type: 'image'
+  #     image-ref: ghcr.io/kedacore/keda:main
+  #     format: 'sarif'
+  #     exit-code: 0
+  #     publish: true

@@ -1,8 +1,7 @@
 name: Automatically add new issue to backlog
 on:
-  issues:
-    types:
-      - opened
+  workflow_dispatch:
+  
 jobs:
   track_issue:
     runs-on: ubuntu-latest

@@ -15,8 +15,8 @@ VERSION = ${E2E_IMAGE_TAG}
 SUFFIX = -test
 endif
 
-IMAGE_REGISTRY ?= ghcr.io
-IMAGE_REPO     ?= kedacore
+IMAGE_REGISTRY ?= azurekeda.azurecr.io
+IMAGE_REPO     ?= public/azurekeda
 
 IMAGE_CONTROLLER = $(IMAGE_REGISTRY)/$(IMAGE_REPO)/keda$(SUFFIX):$(VERSION)
 IMAGE_ADAPTER    = $(IMAGE_REGISTRY)/$(IMAGE_REPO)/keda-metrics-apiserver$(SUFFIX):$(VERSION)
@@ -33,7 +33,7 @@ GIT_VERSION ?= $(shell git describe --always --abbrev=7)
 GIT_COMMIT  ?= $(shell git rev-list -1 HEAD)
 DATE        = $(shell date -u +"%Y.%m.%d.%H.%M.%S")
 
-TEST_CLUSTER_NAME ?= keda-e2e-cluster-nightly
+TEST_CLUSTER_NAME ?= azurekeda-e2e-cluster-nightly
 NODE_POOL_SIZE ?= 1
 NON_ROOT_USER_ID ?= 1000
 
