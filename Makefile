@@ -15,8 +15,10 @@ VERSION = ${E2E_IMAGE_TAG}
 SUFFIX = -test
 endif
 
-IMAGE_REGISTRY ?= azurekeda.azurecr.io
-IMAGE_REPO     ?= public/azurekeda
+# IMAGE_REGISTRY ?= azurekeda.azurecr.io
+# IMAGE_REPO     ?= public/azurekeda
+IMAGE_REGISTRY ?= kedainternaltest.azurecr.io
+IMAGE_REPO     ?= azurekeda
 
 IMAGE_CONTROLLER = $(IMAGE_REGISTRY)/$(IMAGE_REPO)/keda$(SUFFIX):$(VERSION)
 IMAGE_ADAPTER    = $(IMAGE_REGISTRY)/$(IMAGE_REPO)/keda-metrics-apiserver$(SUFFIX):$(VERSION)
