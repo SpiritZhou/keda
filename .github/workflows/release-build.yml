@@ -54,7 +54,9 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo ${GITHUB_REF#refs/tags/v}
 
       - name: Release Deployment YAML file
         run: make release
