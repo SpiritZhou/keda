@@ -57,10 +57,10 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
 
-      - name: Release Deployment YAML file
-        run: make release
-        env:
-          VERSION: ${{ steps.get_version.outputs.VERSION }}
+      # - name: Release Deployment YAML file
+      #   run: make release
+      #   env:
+      #     VERSION: ${{ steps.get_version.outputs.VERSION }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -85,32 +85,32 @@ jobs:
           VERSION: ${{ steps.get_version.outputs.VERSION }}
 
         # Get release information to determine id of the current release
-      - name: Get Release
-        id: get-release-info
-        uses: bruceadams/get-release@v1.3.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Get Release
+      #   id: get-release-info
+      #   uses: bruceadams/get-release@v1.3.2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Upload deployment YAML file to GitHub release
-      - name: Upload Deployment YAML file
-        id: upload-deployment-yaml
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: https://uploads.github.com/repos/kedacore/keda/releases/${{ steps.get-release-info.outputs.id }}/assets?name=keda-${{ steps.get_version.outputs.VERSION }}.yaml
-          asset_path: keda-${{ steps.get_version.outputs.VERSION }}.yaml
-          asset_name: keda-${{ steps.get_version.outputs.VERSION }}.yaml
-          asset_content_type: application/x-yaml
+      # # Upload deployment YAML file to GitHub release
+      # - name: Upload Deployment YAML file
+      #   id: upload-deployment-yaml
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: https://uploads.github.com/repos/kedacore/keda/releases/${{ steps.get-release-info.outputs.id }}/assets?name=keda-${{ steps.get_version.outputs.VERSION }}.yaml
+      #     asset_path: keda-${{ steps.get_version.outputs.VERSION }}.yaml
+      #     asset_name: keda-${{ steps.get_version.outputs.VERSION }}.yaml
+      #     asset_content_type: application/x-yaml
 
-      # Upload core deployment YAML file to GitHub release (TO BE DELETED FOR v2.12)
-      - name: Upload Deployment YAML file
-        id: upload-core-deployment-yaml
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: https://uploads.github.com/repos/kedacore/keda/releases/${{ steps.get-release-info.outputs.id }}/assets?name=keda-${{ steps.get_version.outputs.VERSION }}-core.yaml
-          asset_path: keda-${{ steps.get_version.outputs.VERSION }}-core.yaml
-          asset_name: keda-${{ steps.get_version.outputs.VERSION }}-core.yaml
-          asset_content_type: application/x-yaml
+      # # Upload core deployment YAML file to GitHub release (TO BE DELETED FOR v2.12)
+      # - name: Upload Deployment YAML file
+      #   id: upload-core-deployment-yaml
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: https://uploads.github.com/repos/kedacore/keda/releases/${{ steps.get-release-info.outputs.id }}/assets?name=keda-${{ steps.get_version.outputs.VERSION }}-core.yaml
+      #     asset_path: keda-${{ steps.get_version.outputs.VERSION }}-core.yaml
+      #     asset_name: keda-${{ steps.get_version.outputs.VERSION }}-core.yaml
+      #     asset_content_type: application/x-yaml
