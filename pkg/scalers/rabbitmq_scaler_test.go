@@ -150,7 +150,7 @@ var testRabbitMQAuthParamData = []parseRabbitMQAuthParamTestData{
 	// failure, TLS missing key
 	{map[string]string{"queueName": "sample", "hostFromEnv": host}, v1alpha1.AuthPodIdentity{}, map[string]string{"tls": "enable", "ca": "caaa", "cert": "ceert"}, true, true, false},
 	// failure, TLS invalid
-	{map[string]string{"queueName": "sample", "hostFromEnv": host}, v1alpha1.AuthPodIdentity{}, map[string]string{"tls": "yes", "ca": "caaa", "cert": "ceert", "key": "kee"}, true, true, false},
+	{map[string]string{"queueName": "sample", "hostFromEnv": host}, v1alpha1.AuthPodIdentity{}, map[string]string{"tls": "yes", "ca": "caaa", "cert": "ceert", "key": "kee"}, true, false, false},
 	// success, WorkloadIdentity
 	{map[string]string{"queueName": "sample", "hostFromEnv": host, "protocol": "http"}, v1alpha1.AuthPodIdentity{Provider: v1alpha1.PodIdentityProviderAzureWorkload, IdentityID: kedautil.StringPointer("client-id")}, map[string]string{"workloadIdentityResource": "rabbitmq-resource-id"}, false, false, true},
 	// failure, WoekloadIdentity not supported for amqp
@@ -175,8 +175,8 @@ func TestRabbitMQParseMetadata(t *testing.T) {
 			if err != nil && !testData.isError {
 				t.Errorf("Expect error but got success in test case %d", idx)
 			}
-			if boolVal != meta.unsafeSsl {
-				t.Errorf("Expect %t but got %t in test case %d", boolVal, meta.unsafeSsl, idx)
+			if boolVal != meta.UnsafeSsl {
+				t.Errorf("Expect %t but got %t in test case %d", boolVal, meta.UnsafeSsl, idx)
 			}
 		}
 	}
@@ -191,25 +191,25 @@ func TestRabbitMQParseAuthParamData(t *testing.T) {
 		if testData.isError && err == nil {
 			t.Error("Expected error but got success")
 		}
-		if metadata != nil && metadata.enableTLS != testData.enableTLS {
-			t.Errorf("Expected enableTLS to be set to %v but got %v\n", testData.enableTLS, metadata.enableTLS)
+		if metadata != nil && metadata.EnableTLS != testData.enableTLS {
+			t.Errorf("Expected enableTLS to be set to %v but got %v\n", testData.enableTLS, metadata.EnableTLS)
 		}
-		if metadata != nil && metadata.enableTLS {
-			if metadata.ca != testData.authParams["ca"] {
-				t.Errorf("Expected ca to be set to %v but got %v\n", testData.authParams["ca"], metadata.enableTLS)
+		if metadata != nil && metadata.EnableTLS {
+			if metadata.Ca != testData.authParams["ca"] {
+				t.Errorf("Expected ca to be set to %v but got %v\n", testData.authParams["ca"], metadata.EnableTLS)
 			}
-			if metadata.cert != testData.authParams["cert"] {
-				t.Errorf("Expected cert to be set to %v but got %v\n", testData.authParams["cert"], metadata.cert)
+			if metadata.Cert != testData.authParams["cert"] {
+				t.Errorf("Expected cert to be set to %v but got %v\n", testData.authParams["cert"], metadata.Cert)
 			}
-			if metadata.key != testData.authParams["key"] {
-				t.Errorf("Expected key to be set to %v but got %v\n", testData.authParams["key"], metadata.key)
+			if metadata.Key != testData.authParams["key"] {
+				t.Errorf("Expected key to be set to %v but got %v\n", testData.authParams["key"], metadata.Key)
 			}
-			if metadata.keyPassword != testData.authParams["keyPassword"] {
-				t.Errorf("Expected key to be set to %v but got %v\n", testData.authParams["keyPassword"], metadata.key)
+			if metadata.KeyPassword != testData.authParams["keyPassword"] {
+				t.Errorf("Expected key to be set to %v but got %v\n", testData.authParams["keyPassword"], metadata.Key)
 			}
 		}
 		if metadata != nil && metadata.workloadIdentityClientID != "" && !testData.workloadIdentity {
-			t.Errorf("Expected workloadIdentity to be disabled but got %v as client ID and %v as resource\n", metadata.workloadIdentityClientID, metadata.workloadIdentityResource)
+			t.Errorf("Expected workloadIdentity to be disabled but got %v as client ID and %v as resource\n", metadata.workloadIdentityClientID, metadata.WorkloadIdentityResource)
 		}
 		if metadata != nil && metadata.workloadIdentityClientID == "" && testData.workloadIdentity {
 			t.Error("Expected workloadIdentity to be enabled but was not\n")
@@ -232,8 +232,8 @@ func TestParseDefaultQueueLength(t *testing.T) {
 			t.Error("Expected success but got error", err)
 		case testData.isError && err == nil:
 			t.Error("Expected error but got success")
-		case metadata.value != defaultRabbitMQQueueLength:
-			t.Error("Expected default queueLength =", defaultRabbitMQQueueLength, "but got", metadata.value)
+		case metadata.Value != defaultRabbitMQQueueLength:
+			t.Error("Expected default queueLength =", defaultRabbitMQQueueLength, "but got", metadata.Value)
 		}
 	}
 }
